@@ -43,20 +43,20 @@ git checkout main
 git fetch upstream
 ```
 
-Compare local main against upstream/main using `gh api`:
+Show divergence between local and upstream using left-right notation (`<` = our commits, `>` = upstream commits we're missing):
+
+```bash
+git log --oneline --left-right main...upstream/main | head -30
+```
+
+Also get a summary count:
 
 ```bash
 gh api "repos/TrueNorthTeamsAI/personal-2nd-brain-openclaw/compare/main...openclaw:openclaw:main" \
   --jq "{status: .status, ahead_by: .ahead_by, behind_by: .behind_by}"
 ```
 
-Show the new upstream commits:
-
-```bash
-git log --oneline HEAD..upstream/main
-```
-
-If there are no new commits, stop and report that the fork is already up to date.
+If there are no new upstream commits, stop and report that the fork is already up to date.
 
 Report the number of new commits and notable highlights (security fixes, breaking changes, version bumps).
 
@@ -69,6 +69,15 @@ git merge upstream/main --no-edit
 ```
 
 - If merge conflicts occur, stop and report them to the user. Do NOT force-resolve.
+- Use this table to guide conflict resolution when the user chooses to resolve:
+
+| File pattern | Resolution guidance |
+|---|---|
+| `package.json` | Take upstream deps, keep local scripts if needed |
+| `pnpm-lock.yaml` | Accept upstream version, regenerate with `pnpm install` |
+| `*.patch` files | Usually take upstream version |
+| Source files | Merge logic carefully, prefer upstream structure |
+
 - If clean, continue.
 
 ---
