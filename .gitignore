@@ -78,6 +78,10 @@ USER.md
 # local tooling
 .serena/
 
+
+# Claude Code artifacts
+nul
+
 # Agent credentials and memory (NEVER COMMIT)
 /memory/
 .agent/*.json
